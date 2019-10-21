@@ -49,7 +49,7 @@ public class OneTimePasswordAlgorithm {
         if (result > 0) {
             result = 10 - result;
         }
-        System.out.println("done");
+
         return result;
     }
 /**
@@ -155,9 +155,39 @@ static public String generateOTP(byte[] secret,
     }
     return result;
 }
+//TODO get key from saves files  get moving factor from files
+public boolean checkOtp(String otp) {
+    String key = "12345678901234567890";
+    byte[] keyInBytes = key.getBytes();
+    int codeDigits= otp.length();
+    int movingFactor=1;
+    try {
+        if(generateOTP(keyInBytes,movingFactor,codeDigits,true,1).equals(otp)){
+            codeDigits++;
+            return true;
+        }
+    } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+    } catch (InvalidKeyException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 
     public static void main(String[] args) {
+        String key = "12345678901234567890";
+        System.out.println(key);
         OneTimePasswordAlgorithm otp = new OneTimePasswordAlgorithm();
-        otp.calcChecksum(4535,453);
+        try {
+            for (int i=0; i<10 ; i++){
+                String otpValue= otp.generateOTP(key.getBytes(),i,4,true,1);
+                System.out.println(otpValue);
+            }
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
     }
 }
